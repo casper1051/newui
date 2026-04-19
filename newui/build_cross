@@ -7,5 +7,5 @@ docker run --rm -it \
   /bin/bash -c "
     flutter pub get && \
     flutter build linux --release && \
-    makeself --nocomp build/linux/arm64/release/bundle/ newui_portable.run 'System UI' ./newui
+    makeself --nocomp build/linux/arm64/release/bundle/ newui_portable.run 'System UI' ./newui \"\$@\"
   "

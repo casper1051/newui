@@ -1,5 +1,5 @@
+find . -name ".DS_Store" -delete
 
-rm .DS_Store
 
 read commit_msg
 git add .
