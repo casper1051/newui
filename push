@@ -1,0 +1,7 @@
+
+rm .DS_Store
+
+read commit_msg
+git add .
+git commit -m "$commit_msg"
+git push origin main
