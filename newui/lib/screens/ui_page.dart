@@ -101,9 +101,9 @@ class UpdatePage extends StatefulWidget {
 class _UpdatePageState extends State<UpdatePage> {
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "1.0.8";
+  String _currentVersion = "1.0.9";
   String _statusMessage = "Check updates to determine status.";
-  String _remoteVersion = "1.0.8";
+  String _remoteVersion = "1.0.9";
   bool _updateAvailable = false;
 
   @override
