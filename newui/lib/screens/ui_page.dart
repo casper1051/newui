@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/nav_button.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../widgets/nav_button.dart';
 
 class UiPage extends StatelessWidget {
   const UiPage({super.key});
@@ -10,45 +10,46 @@ class UiPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         toolbarHeight: 100,
         backgroundColor: const Color(0xFF121212),
+        elevation: 0,
         title: const Padding(
           padding: EdgeInsets.only(top: 30.0),
           child: Text(
             "UI Settings",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
       ),
-      body: Transform.translate(
-        offset: const Offset(0, -30),
-        child: Center(
-          child: Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            alignment: WrapAlignment.center,
-            children: [
-              NavButton(
-                label: 'Update Interface',
-                icon: Icons.update,
-                color: const Color(0xFF08C4A1),
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdatePage()))
+      body: Center(
+        child: Wrap(
+          spacing: 20,
+          runSpacing: 20,
+          alignment: WrapAlignment.center,
+          children: [
+            NavButton(
+              label: 'Update Interface',
+              icon: Icons.update,
+              color: const Color(0xFF08C4A1),
+              onPressed: () => Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => const UpdatePage())
               ),
-              NavButton(
-                label: 'Hide UI',
-                icon: Icons.verified,
-                color: Colors.redAccent,
-                onPressed: () => {}
-              ),
-            ],
-          ),
+            ),
+            NavButton(
+              label: 'Hide UI',
+              icon: Icons.visibility_off,
+              color: Colors.redAccent,
+              onPressed: () => print("Hiding UI..."),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
 
 class UpdatePage extends StatefulWidget {
   const UpdatePage({super.key});
@@ -58,10 +59,13 @@ class UpdatePage extends StatefulWidget {
 }
 
 class _UpdatePageState extends State<UpdatePage> {
+  // State Variables
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
   String _currentVersion = "1.0.1";
   String _statusMessage = "System is up to date.";
+  String _remoteVersion = "1.0.1";
+  bool _updateAvailable = false;
 
   @override
   void initState() {
@@ -79,9 +83,24 @@ class _UpdatePageState extends State<UpdatePage> {
   Future<void> _toggleAutoUpdate(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('auto_update', value);
-    setState(() {
-      _isAutoUpdateEnabled = value;
-    });
+    setState(() => _isAutoUpdateEnabled = value);
+  }
+
+  // Version Comparison Logic
+  bool _isNewerVersion(String current, String remote) {
+    try {
+      List<int> currentParts = current.split('.').map(int.parse).toList();
+      List<int> remoteParts = remote.split('.').map(int.parse).toList();
+
+      for (var i = 0; i < remoteParts.length; i++) {
+        int currentDigit = i < currentParts.length ? currentParts[i] : 0;
+        if (remoteParts[i] > currentDigit) return true;
+        if (remoteParts[i] < currentDigit) return false;
+      }
+    } catch (e) {
+      debugPrint("Parsing Error: $e");
+    }
+    return false;
   }
 
   Future<void> _checkForUpdates() async {
@@ -90,12 +109,29 @@ class _UpdatePageState extends State<UpdatePage> {
       _statusMessage = "Checking for updates...";
     });
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final url = Uri.parse('https://raw.githubusercontent.com/casper1051/newui/refs/heads/main/update/stable.json');
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
 
-    setState(() {
-      _isChecking = false;
-      _statusMessage = "A newer version (@TODO Display newer version) is available.";
-    });
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final String newVer = data['version'];
+        
+        setState(() {
+          _remoteVersion = newVer;
+          _updateAvailable = _isNewerVersion(_currentVersion, _remoteVersion);
+          _statusMessage = _updateAvailable 
+              ? "A newer version ($_remoteVersion) is available." 
+              : "System is up to date.";
+        });
+      } else {
+        setState(() => _statusMessage = "Update server unreachable.");
+      }
+    } catch (e) {
+      setState(() => _statusMessage = "Check failed. Check your internet.");
+    } finally {
+      setState(() => _isChecking = false);
+    }
   }
 
   @override
@@ -107,13 +143,14 @@ class _UpdatePageState extends State<UpdatePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text("System Updates", 
-          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Version Info Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(25),
@@ -134,8 +171,8 @@ class _UpdatePageState extends State<UpdatePage> {
                   Row(
                     children: [
                       Icon(
-                        _isChecking ? Icons.sync : Icons.check_circle_outline, 
-                        color: _isChecking ? Colors.orangeAccent : Colors.greenAccent, 
+                        _isChecking ? Icons.sync : (_updateAvailable ? Icons.info_outline : Icons.check_circle_outline), 
+                        color: _isChecking ? Colors.orangeAccent : (_updateAvailable ? Colors.blueAccent : Colors.greenAccent), 
                         size: 20
                       ),
                       const SizedBox(width: 10),
@@ -148,11 +185,12 @@ class _UpdatePageState extends State<UpdatePage> {
 
             const SizedBox(height: 30),
 
+            // Settings Tile
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10),
               title: const Text("Auto-Download Updates", 
                 style: TextStyle(fontSize: 18, color: Colors.white)),
-              subtitle: const Text("Automatically download and prepare updates in the background", 
+              subtitle: const Text("Automatically prepare updates in the background", 
                 style: TextStyle(color: Colors.white38, fontSize: 13)),
               trailing: Switch(
                 value: _isAutoUpdateEnabled,
@@ -163,14 +201,16 @@ class _UpdatePageState extends State<UpdatePage> {
 
             const Spacer(),
 
+            // Action Buttons
             Row(
               children: [
                 Expanded(
                   child: _actionButton(
-                    label: "Check for Updates",
+                    label: "Check Updates",
                     icon: Icons.search,
                     color: Colors.white10,
                     textColor: Colors.white,
+                    // Graying out happens in the helper method below
                     onPressed: _isChecking ? null : _checkForUpdates,
                   ),
                 ),
@@ -181,9 +221,7 @@ class _UpdatePageState extends State<UpdatePage> {
                     icon: Icons.system_update_alt,
                     color: const Color(0xFF08C4A1),
                     textColor: Colors.black,
-                    onPressed: () {
-                      print("Updating newui...");
-                    },
+                    onPressed: (_updateAvailable && !_isChecking) ? () => print("Updating...") : null,
                   ),
                 ),
               ],
@@ -202,15 +240,19 @@ class _UpdatePageState extends State<UpdatePage> {
     required Color textColor,
     required VoidCallback? onPressed,
   }) {
+    bool isDisabled = onPressed == null;
+
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon),
+      icon: Icon(icon, size: 20),
       label: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
       style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: textColor,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        // Switch to Gray if disabled
+        backgroundColor: isDisabled ? Colors.grey.withOpacity(0.1) : color,
+        foregroundColor: isDisabled ? Colors.white24 : textColor,
+        disabledBackgroundColor: Colors.white10, // Backup for Flutter's default
+        padding: const EdgeInsets.symmetric(vertical: 22),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 0,
       ),
     );
