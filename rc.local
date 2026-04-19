@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/home/user/newui/included/aarch64-generic/flutter-pi --videomode 800x480 /home/user/newui/included/aarch64-generic --release &
+
+exit 0

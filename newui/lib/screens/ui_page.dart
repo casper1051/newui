@@ -63,9 +63,9 @@ class UpdatePage extends StatefulWidget {
 class _UpdatePageState extends State<UpdatePage> {
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "1.0.6";
+  String _currentVersion = "1.0.7";
   String _statusMessage = "Check updates to determine status.";
-  String _remoteVersion = "1.0.6";
+  String _remoteVersion = "1.0.7";
   bool _updateAvailable = false;
 
   @override
@@ -77,14 +77,15 @@ class _UpdatePageState extends State<UpdatePage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _isAutoUpdateEnabled = prefs.getBool('auto_update') ?? false;
+      //_isAutoUpdateEnabled = prefs.getBool('auto_update') ?? false;
+      _isAutoUpdateEnabled = false;
     });
   }
 
   Future<void> _toggleAutoUpdate(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('auto_update', value);
-    setState(() => _isAutoUpdateEnabled = value);
+    setState(() => _isAutoUpdateEnabled = false);
   }
 
   bool _isNewerVersion(String current, String remote) {
