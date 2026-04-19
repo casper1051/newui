@@ -3,6 +3,7 @@ import '../widgets/nav_button.dart';
 import 'system_services_page.dart';
 import 'ui_page.dart';
 import 'stm32/stm32_page.dart';
+import "network_screen.dart";
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -33,7 +34,7 @@ class SettingsPage extends StatelessWidget {
                 label: 'WiFi',
                 icon: Icons.wifi,
                 color: const Color(0xFF08C4A1),
-                onPressed: () => print("Open WiFi Config"),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NetworkPage()))
               ),
               NavButton(
                 label: 'System Services',

@@ -1,5 +1,9 @@
 rm -rf ./build/flutter-pi/
 flutterpi_tool build --arch=arm64 --cpu=pi3
-rsync -a ./build/flutter-pi/ user@veil.local:/home/user/newui
+#rsync -a ./build/flutter-pi/ user@veil.local:/home/user/newui
+
+rm -rf ../update/included/aarch64-generic
+
+cp -r ./build/flutter-pi/aarch64-generic ../update/included/
 
 echo "\"sudo ./flutter-pi --videomode 800x480 . --release\" to run"
