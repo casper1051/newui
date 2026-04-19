@@ -61,12 +61,11 @@ class UpdatePage extends StatefulWidget {
 }
 
 class _UpdatePageState extends State<UpdatePage> {
-  // State Variables
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "1.0.5";
+  String _currentVersion = "1.0.6";
   String _statusMessage = "Check updates to determine status.";
-  String _remoteVersion = "1.0.5";
+  String _remoteVersion = "1.0.6";
   bool _updateAvailable = false;
 
   @override
@@ -88,7 +87,6 @@ class _UpdatePageState extends State<UpdatePage> {
     setState(() => _isAutoUpdateEnabled = value);
   }
 
-  // Version Comparison Logic
   bool _isNewerVersion(String current, String remote) {
     try {
       List<int> currentParts = current.split('.').map(int.parse).toList();
@@ -136,6 +134,67 @@ class _UpdatePageState extends State<UpdatePage> {
     }
   }
 
+  void _showOutputDialog(String title, String output, {bool isError = false}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: const Color(0xFF1E1E1E),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: SizedBox(
+            width: 300,
+            height: 400,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: isError ? Colors.redAccent : Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                const Divider(color: Colors.white10, height: 1),
+                Expanded(
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        output.isEmpty ? "No output received." : output,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontFamily: 'monospace',
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Divider(color: Colors.white10, height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("CONFIRM", style: TextStyle(color: Color(0xFF08C4A1), fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,7 +212,6 @@ class _UpdatePageState extends State<UpdatePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Version Info Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(25),
@@ -185,10 +243,7 @@ class _UpdatePageState extends State<UpdatePage> {
                 ],
               ),
             ),
-
             const SizedBox(height: 30),
-
-            // Settings Tile
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 10),
               title: const Text("Auto-Download Updates", 
@@ -196,15 +251,12 @@ class _UpdatePageState extends State<UpdatePage> {
               subtitle: const Text("Automatically prepare updates in the background", 
                 style: TextStyle(color: Colors.white38, fontSize: 13)),
               trailing: Switch(
-                value: false,
+                value: _isAutoUpdateEnabled,
                 activeColor: const Color(0xFF08C4A1),
                 onChanged: _toggleAutoUpdate,
               ),
             ),
-
             const Spacer(),
-
-            // Action Buttons
             Row(
               children: [
                 Expanded(
@@ -213,7 +265,6 @@ class _UpdatePageState extends State<UpdatePage> {
                     icon: Icons.search,
                     color: Colors.white10,
                     textColor: Colors.white,
-                    // Graying out happens in the helper method below
                     onPressed: _isChecking ? null : _checkForUpdates,
                   ),
                 ),
@@ -229,28 +280,22 @@ class _UpdatePageState extends State<UpdatePage> {
                         _isChecking = true;
                         _statusMessage = "Updating...";
                       });
-                      final result = await Process.run('bash', ['-c', 'mkdir -p /home/user/newui_update && cd /home/user/newui_update && wget https://raw.githubusercontent.com/casper1051/newui/main/update/included.zip && unzip -o ./included.zip -d . && rm ./included.zip && mkdir -p /home/user/newui && cp -r ./update/included /home/user/newui && cd /home/user && rm -rf /home/user/newui_update']);
-                      /*
-                      mkdir -p /home/user/newui_update
-                      cd /home/user/newui_update
-                      wget https://raw.githubusercontent.com/casper1051/newui/refs/heads/main/update/included.zip
-                      unzip -o ./included.zip -d .
-                      rm ./included.zip
-                      mkdir -p /home/user/newui
-                      cp -r ./update/included /home/user/newui
-                      cd /home/user
-                      rm -rf /home/user/newui_update
-                      */
-                      if (result.exitCode == 0) {
-                        setState(() {
-                          _statusMessage = "Update successful!";
-                          _isChecking = false;
-                        });
-                      } else {
-                        setState(() {
-                          _statusMessage = "Error: ${result.stderr}";
-                          _isChecking = false;
-                        });
+                      
+                      try {
+                        final result = await Process.run('bash', ['-c', 'mkdir -p /home/user/newui_update && cd /home/user/newui_update && wget https://raw.githubusercontent.com/casper1051/newui/main/update/included.zip && unzip -o ./included.zip -d . && rm ./included.zip && mkdir -p /home/user/newui && cp -r ./update/included /home/user/newui && cd /home/user && rm -rf /home/user/newui_update']);
+                        
+                        setState(() => _isChecking = false);
+
+                        if (result.exitCode == 0) {
+                          setState(() => _statusMessage = "Update successful!");
+                          _showOutputDialog("Update Success", result.stdout.toString());
+                        } else {
+                          setState(() => _statusMessage = "Update Failed");
+                          _showOutputDialog("Update Error", result.stderr.toString(), isError: true);
+                        }
+                      } catch (e) {
+                        setState(() => _isChecking = false);
+                        _showOutputDialog("System Error", e.toString(), isError: true);
                       }
                     } : null,
                   ),
@@ -272,16 +317,14 @@ class _UpdatePageState extends State<UpdatePage> {
     required VoidCallback? onPressed,
   }) {
     bool isDisabled = onPressed == null;
-
     return ElevatedButton.icon(
       onPressed: onPressed,
       icon: Icon(icon, size: 20),
       label: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
       style: ElevatedButton.styleFrom(
-        // Switch to Gray if disabled
         backgroundColor: isDisabled ? Colors.grey.withOpacity(0.1) : color,
         foregroundColor: isDisabled ? Colors.white24 : textColor,
-        disabledBackgroundColor: Colors.white10, // Backup for Flutter's default
+        disabledBackgroundColor: Colors.white10,
         padding: const EdgeInsets.symmetric(vertical: 22),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 0,
