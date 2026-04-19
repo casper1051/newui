@@ -47,6 +47,7 @@ class _SystemServicesPageState extends State<SystemServicesPage> {
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         toolbarHeight: 120,
+        centerTitle: true,
         backgroundColor: const Color(0xFF121212),
         elevation: 0,
         title: const Padding(

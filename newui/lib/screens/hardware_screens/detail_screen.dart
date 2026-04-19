@@ -207,7 +207,7 @@ class ScrollingGraphPainter extends CustomPainter {
 
 
 PreferredSizeWidget _buildAppBar(String title) => AppBar(
-  toolbarHeight: 80, backgroundColor: const Color(0xFF121212), elevation: 0,
+  toolbarHeight: 80, backgroundColor: const Color(0xFF121212), elevation: 0, centerTitle: true,
   title: Text(title, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
 );
 

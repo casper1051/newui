@@ -6,4 +6,8 @@ rm -rf ../update/included/aarch64-generic
 
 cp -r ./build/flutter-pi/aarch64-generic ../update/included/
 
+rm -rf ../update/included.zip
+
+zip -o ../update/included.zip -r ../update/included
+
 echo "\"sudo ./flutter-pi --videomode 800x480 . --release\" to run"

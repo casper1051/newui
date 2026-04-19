@@ -19,6 +19,7 @@ class _ProgramsPageState extends State<ProgramsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
+        centerTitle: true,
         title: const Text("Program Manager", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,

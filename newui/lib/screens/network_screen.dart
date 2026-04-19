@@ -87,6 +87,7 @@ Future<void> _fetchNetworkInfo() async {
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         toolbarHeight: 100,
+        centerTitle: true,
         backgroundColor: const Color(0xFF121212),
         elevation: 0,
         title: const Text(

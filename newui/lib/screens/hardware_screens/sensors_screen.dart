@@ -119,6 +119,7 @@ Widget _buildSymmetricGrid(BuildContext context, {required int crossAxisCount, r
 PreferredSizeWidget _buildAppBar(String title) {
   return AppBar(
     toolbarHeight: 80,
+    centerTitle: true,
     backgroundColor: const Color(0xFF121212),
     title: Text(title, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
   );

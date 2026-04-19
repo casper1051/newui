@@ -29,7 +29,7 @@ class _ServoPageState extends State<ServoPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(title: const Text("Servo Control"), backgroundColor: Colors.transparent),
+      appBar: AppBar(title: const Text("Servo Control"), centerTitle: true,backgroundColor: Colors.transparent),
       body: Row(
         children: [
           

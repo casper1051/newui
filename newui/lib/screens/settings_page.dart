@@ -13,6 +13,7 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
+        centerTitle: true,
         backgroundColor: const Color(0xFF121212),
         title: const Padding(
           padding: EdgeInsets.only(top: 30.0),

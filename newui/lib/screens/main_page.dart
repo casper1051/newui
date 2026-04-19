@@ -13,6 +13,7 @@ class MainPage extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 100,
         backgroundColor: const Color(0xFF121212),
+        centerTitle: true,
         title: const Padding(
           padding: EdgeInsets.only(top: 30.0),
           child: Text("newui", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),

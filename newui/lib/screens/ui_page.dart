@@ -16,11 +16,12 @@ class UiPage extends StatelessWidget {
         toolbarHeight: 100,
         backgroundColor: const Color(0xFF121212),
         elevation: 0,
+        centerTitle: true,
         title: const Padding(
           padding: EdgeInsets.only(top: 30.0),
           child: Text(
             "UI Settings",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white,),
           ),
         ),
       ),
@@ -63,9 +64,9 @@ class _UpdatePageState extends State<UpdatePage> {
   // State Variables
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "1.0.2";
+  String _currentVersion = "1.0.3";
   String _statusMessage = "System is up to date.";
-  String _remoteVersion = "1.0.2";
+  String _remoteVersion = "1.0.3";
   bool _updateAvailable = false;
 
   @override
@@ -141,6 +142,7 @@ class _UpdatePageState extends State<UpdatePage> {
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         toolbarHeight: 100,
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text("System Updates", 

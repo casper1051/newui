@@ -84,7 +84,7 @@ class _MotorsPageState extends State<MotorsPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(title: const Text("Motor Control"), backgroundColor: Colors.transparent),
+      appBar: AppBar(title: const Text("Motor Control"), centerTitle: true,backgroundColor: Colors.transparent),
       body: Row(
         children: [
           Expanded(
