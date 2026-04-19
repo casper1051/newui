@@ -229,7 +229,7 @@ class _UpdatePageState extends State<UpdatePage> {
                         _isChecking = true;
                         _statusMessage = "Updating...";
                       });
-                      final result = await Process.run('bash', ['-c', 'mkdir -p /home/user/newui_update && cd /home/user/newui_update && wget https://raw.githubusercontent.com/casper1051/newui/refs/heads/main/update/included.zip && unzip ./included.zip && rm ./included.zip && mkdir -p /home/user/newui && cp -r ./included /home/user/newui && cd /home/user && rm -rf /home/user/newui_update']);
+                      final result = await Process.run('bash', ['-c', 'mkdir -p /home/user/newui_update && cd /home/user/newui_update && wget https://raw.githubusercontent.com/casper1051/newui/refs/heads/main/update/included.zip && unzip ./included.zip && rm ./included.zip && mkdir -p /home/user/newui && cp -r ./update/included /home/user/newui && cd /home/user && rm -rf /home/user/newui_update']);
                       if (result.exitCode == 0) {
                         setState(() {
                           _statusMessage = "Update successful!";
