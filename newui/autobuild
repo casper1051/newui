@@ -1,0 +1,2 @@
+flutterpi_tool build --arch=arm64 --cpu=pi3
+rsync -a ./build/flutter-pi/ user@veil.local:/home/user/Desktop/newui
