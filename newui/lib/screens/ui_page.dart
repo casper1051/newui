@@ -36,23 +36,11 @@ class UiPage extends StatelessWidget {
                 onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const UpdatePage()))
               ),
               NavButton(
-                label: 'Version',
+                label: 'Hide UI',
                 icon: Icons.verified,
                 color: Colors.redAccent,
                 onPressed: () => {}
               ),
-              /*NavButton(
-                label: 'STM32 Controller',
-                icon: Icons.memory,
-                color: Colors.indigoAccent,
-                onPressed: () => print("Coprocessor Settings"),
-              ),
-              NavButton(
-                label: 'UI Settings',
-                icon: Icons.tune,
-                color: Colors.orangeAccent,
-                onPressed: () => print("Display/Theme Settings"),
-              ),*/
             ],
           ),
         ),
@@ -72,7 +60,7 @@ class UpdatePage extends StatefulWidget {
 class _UpdatePageState extends State<UpdatePage> {
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "v1.0.3-nightly";
+  String _currentVersion = "1.0.1";
   String _statusMessage = "System is up to date.";
 
   @override
