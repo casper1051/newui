@@ -7,8 +7,6 @@ GPIOCHIP=0
 
 echo "Initializing GPIOs..."
 
-# Initialize BOOT0 to low
-gpioset gpiochip${GPIOCHIP} ${BOOT0}=0
 
-# Initialize RST to high
-gpioset gpiochip${GPIOCHIP} ${RST}=1
+timeout 0.02s gpioset -c 0 17=0
+timeout 0.02s gpioset -c 0 23=1

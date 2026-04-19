@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/nav_button.dart';
 import 'system_services_page.dart';
 import 'ui_page.dart';
+import 'stm32/stm32_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -49,7 +50,7 @@ class SettingsPage extends StatelessWidget {
                 label: 'STM32 Controller',
                 icon: Icons.memory,
                 color: Colors.indigoAccent,
-                onPressed: () => print("Coprocessor Settings"),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const STM32Page()))
               ),
               NavButton(
                 label: 'UI',

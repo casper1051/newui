@@ -194,7 +194,7 @@ class _UpdatePageState extends State<UpdatePage> {
               subtitle: const Text("Automatically prepare updates in the background", 
                 style: TextStyle(color: Colors.white38, fontSize: 13)),
               trailing: Switch(
-                value: _isAutoUpdateEnabled,
+                value: false,
                 activeColor: const Color(0xFF08C4A1),
                 onChanged: _toggleAutoUpdate,
               ),
@@ -227,7 +227,7 @@ class _UpdatePageState extends State<UpdatePage> {
                         _isChecking = true;
                         _statusMessage = "Updating...";
                       });
-                      final result = await Process.run('bash', ['-c', 'cd ~ && mkdir newui_update && cd newui_update']);
+                      final result = await Process.run('bash', ['-c', 'mkdir -p /home/user/newui_update && cd /home/user/newui_update && wget https://raw.githubusercontent.com/casper1051/newui/refs/heads/main/update/included.zip && unzip ./included.zip && rm ./included.zip && mkdir -p /home/user/newui && cp -r ./included /home/user/newui && cd /home/user && rm -rf /home/user/newui_update']);
                       if (result.exitCode == 0) {
                         setState(() {
                           _statusMessage = "Update successful!";

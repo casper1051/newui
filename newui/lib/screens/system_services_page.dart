@@ -9,8 +9,8 @@ class SystemServicesPage extends StatefulWidget {
 }
 
 class _SystemServicesPageState extends State<SystemServicesPage> {
-  bool isSshEnabled = false;
-  bool isBridgeEnabled = false;
+  bool isSshEnabled = true;
+  bool isBridgeEnabled = true;
   bool isVncEnabled = false;
 
   @override
@@ -20,11 +20,11 @@ class _SystemServicesPageState extends State<SystemServicesPage> {
   }
 
   Future<void> _loadServiceStates() async {
-    final prefs = await SharedPreferences.getInstance();
+    //final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isSshEnabled = prefs.getBool('ssh_enabled') ?? false;
-      isBridgeEnabled = prefs.getBool('bridge_enabled') ?? false;
-      isVncEnabled = prefs.getBool('vnc_enabled') ?? false;
+      isSshEnabled = true;//prefs.getBool('ssh_enabled') ?? true;
+      isBridgeEnabled = true;//prefs.getBool('bridge_enabled') ?? true;
+      isVncEnabled = false;//prefs.getBool('vnc_enabled') ?? false;
     });
   }
 
@@ -33,9 +33,9 @@ class _SystemServicesPageState extends State<SystemServicesPage> {
     await prefs.setBool(key, value);
     
     setState(() {
-      if (key == 'ssh_enabled') isSshEnabled = value;
-      if (key == 'bridge_enabled') isBridgeEnabled = value;
-      if (key == 'vnc_enabled') isVncEnabled = value;
+      if (key == 'ssh_enabled') isSshEnabled = true;
+      if (key == 'bridge_enabled') isBridgeEnabled = true;
+      if (key == 'vnc_enabled') isVncEnabled = false;
     });
 
     debugPrint("Service $key is now $value");
@@ -63,15 +63,15 @@ class _SystemServicesPageState extends State<SystemServicesPage> {
           children: [
             _buildServiceTile(
               label: "SSH Server",
-              subtitle: "Port 22 • Secure Shell",
+              subtitle: "This setting is managed",
               icon: Icons.terminal,
               value: isSshEnabled,
               onChanged: (val) => _toggleService('ssh_enabled', val),
             ),
             const SizedBox(height: 16),
             _buildServiceTile(
-              label: "Network Bridge",
-              subtitle: "br0 • Ethernet to WLAN",
+              label: "Hardware Bridge",
+              subtitle: "This setting is managed",
               icon: Icons.router,
               value: isBridgeEnabled,
               onChanged: (val) => _toggleService('bridge_enabled', val),
@@ -79,7 +79,7 @@ class _SystemServicesPageState extends State<SystemServicesPage> {
             const SizedBox(height: 16),
             _buildServiceTile(
               label: "VNC Server",
-              subtitle: "Port 5900 • Remote Desktop",
+              subtitle: "This setting is unavailable",
               icon: Icons.desktop_windows,
               value: isVncEnabled,
               onChanged: (val) => _toggleService('vnc_enabled', val),
