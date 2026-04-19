@@ -64,9 +64,9 @@ class _UpdatePageState extends State<UpdatePage> {
   // State Variables
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
-  String _currentVersion = "1.0.3";
+  String _currentVersion = "1.0.4";
   String _statusMessage = "System is up to date.";
-  String _remoteVersion = "1.0.3";
+  String _remoteVersion = "1.0.4";
   bool _updateAvailable = false;
 
   @override
