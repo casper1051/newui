@@ -65,7 +65,7 @@ class _UpdatePageState extends State<UpdatePage> {
   bool _isAutoUpdateEnabled = false;
   bool _isChecking = false;
   String _currentVersion = "1.0.4";
-  String _statusMessage = "System is up to date.";
+  String _statusMessage = "Check updates to determine status.";
   String _remoteVersion = "1.0.4";
   bool _updateAvailable = false;
 
