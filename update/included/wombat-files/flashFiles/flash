@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Configuration
+BOOT0=17
+RST=23
+BINARY="wombat.bin"
+PORT="/dev/ttyAMA0"
+
+echo "Preparing GPIO"
+
+pinctrl set $BOOT0 op dh
+pinctrl set $RST op dh
+
+echo "BOOT0 (GPIO $BOOT0) set HIGH"
+
+echo "Toggling RST (GPIO $RST)"
+pinctrl set $RST op dl
+sleep 0.2
+pinctrl set $RST op dh
+
+sleep 0.5
+
+echo "Flashing"
+
+if stm32flash -v -S 0x08000000 -w "$BINARY" "$PORT"; then
+    echo "success"
+else
+    echo "fail"
+    exit 1
+fi
+
+echo "Restarting coproc"
+pinctrl set $BOOT0 op dl
+pinctrl set $RST op dl
+sleep 0.2
+pinctrl set $RST op dh
+
+echo "completed"
