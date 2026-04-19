@@ -1,0 +1,11 @@
+echo "This will take around 40 seconds on normal wifi. Be patient"
+
+docker run --rm -it \
+  -v $(pwd):/app \
+  -w /app \
+  pi-builder \
+  /bin/bash -c "
+    flutter pub get && \
+    flutter build linux --release && \
+    makeself --nocomp build/linux/arm64/release/bundle/ newui_portable.run 'System UI' ./newui
+  "

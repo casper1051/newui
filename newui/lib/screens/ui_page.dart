@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/nav_button.dart';
 
@@ -221,7 +222,24 @@ class _UpdatePageState extends State<UpdatePage> {
                     icon: Icons.system_update_alt,
                     color: const Color(0xFF08C4A1),
                     textColor: Colors.black,
-                    onPressed: (_updateAvailable && !_isChecking) ? () => print("Updating...") : null,
+                    onPressed: (_updateAvailable && !_isChecking) ? () async {
+                      setState(() {
+                        _isChecking = true;
+                        _statusMessage = "Updating...";
+                      });
+                      final result = await Process.run('bash', ['-c', 'cd ~ && mkdir newui_update && cd newui_update']);
+                      if (result.exitCode == 0) {
+                        setState(() {
+                          _statusMessage = "Update successful!";
+                          _isChecking = false;
+                        });
+                      } else {
+                        setState(() {
+                          _statusMessage = "Error: ${result.stderr}";
+                          _isChecking = false;
+                        });
+                      }
+                    } : null,
                   ),
                 ),
               ],
